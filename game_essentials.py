@@ -1,8 +1,4 @@
 import pygame
-from ast import literal_eval
-from os import path
-import sys
-import os
 import random
 from pygame.locals import *
 
@@ -23,14 +19,27 @@ class Game:
         self.screen = pygame.display.set_mode(SIZE)
         pygame.display.set_caption("ClanProd")
         self.running = True
-        random.seed()
+        random.seed() # init random generator
         worldseed = random.randrange(10000)
-        print(worldseed)
-        terrain = Tileset('tileset/terrain.tmx', 7, 1)
+        print(worldseed) # print world seed
+        terrain = Tileset('tileset/terrain.tmx', 7, 1) # load tileset for terrain
         #tiled_map = load_pygame('tileset/terrain.tmx')
         #tileimage = tiled_map.get_tile_image(0, 0, 0)
-        world = World((WORLDSIZE,WORLDSIZE),worldseed)
-        self.worldmap = pygame.Surface((1280,1280))
+        world = World((WORLDSIZE,WORLDSIZE),worldseed) # init world
+        self.worldmap = pygame.Surface((1280,720))
+        self.load_map(world, terrain)
+        self.draw_map(self.worldmap, 0, 0)
+        
+
+    def run(self):
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self.running = False
+                    pygame.quit()
+                #elif event.type == MOUSEWHEEL:
+                    
+    def load_map(self, world, terrain):
         for y in range(45):
             for x in range(WORLDSIZE):
                 noisevalue = world.check_noisetile(x,y)
@@ -46,29 +55,18 @@ class Game:
                 height = world.check_heighttile(x,y)
                 if height < 0:
                     self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-                elif x == 0:
-                    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-                elif x == 79:
-                    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-                elif y == 0:
-                    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-                elif y == 44:
-                    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
+                #elif x == 0:
+                #    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
+                #elif x == 79:
+                #    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
+                #elif y == 0:
+                #    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
+                #elif y == 44:
+                #    self.load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
                 elif height < 0.03:
                     self.load_image(pygame.transform.scale(terrain.images[7],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
                 elif height > 0.5:
                     self.load_image(pygame.transform.scale(terrain.images[6],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-        self.draw_map(self.worldmap, 0, 0)
-        
-
-    def run(self):
-        while self.running:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    self.running = False
-                    pygame.quit()
-                #elif event.type == MOUSEWHEEL:
-                    
 
     def load_image(self, file, x,y):
         self.file = file

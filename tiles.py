@@ -1,7 +1,3 @@
-import pygame
-import pytmx
-import numpy as np
-
 from pytmx.util_pygame import load_pygame
 
 class Tileset:
