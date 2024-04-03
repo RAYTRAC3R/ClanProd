@@ -42,6 +42,16 @@ def load_image(file, x,y):
         
 def draw_map(gamemap,x,y):
     window_surface.blit(gamemap, (x,y))
+    
+def create_world(seed):
+    world = World((720,720),seed) # init world
+    load_map(world, terrain)
+    draw_map(worldmap, 560, 0)
+    
+def save_world(save):
+    f = open("save.txt", "w")
+    f.write(str(save))
+    f.close()
 
 pygame.init()
 
@@ -66,7 +76,11 @@ regen_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 200)
                                              text='Regenerate',
                                              manager=manager)
 save_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 300), (250, 50)),
-                                             text='Print Seed',
+                                             text='Save Seed',
+                                             manager=manager)
+#load_seed = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((100, 400), (250, 50)),manager=manager)
+load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 500), (250, 50)),
+                                             text='Load Seed',
                                              manager=manager)
 
 clock = pygame.time.Clock()
@@ -76,10 +90,8 @@ random.seed()
 worldseed = random.randrange(999999)
 #print(worldseed) # print world seed
 terrain = Tileset('tileset/terrain.tmx', 7, 1) # load tileset for terrain
-world = World((WORLDSIZE,WORLDSIZE),worldseed) # init world
 worldmap = pygame.Surface((720,720))
-load_map(world, terrain)
-draw_map(worldmap, 560, 0)
+create_world(worldseed)
 
 while is_running:
     time_delta = clock.tick(60)/1000.0
@@ -91,14 +103,17 @@ while is_running:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == regen_button:
                 worldseed = random.randrange(999999)
-                #print(worldseed) # print world seed
-                terrain = Tileset('tileset/terrain.tmx', 7, 1) # load tileset for terrain
-                world = World((WORLDSIZE,WORLDSIZE),worldseed) # init world
-                worldmap = pygame.Surface((720,720))
-                load_map(world, terrain)
-                draw_map(worldmap, 560, 0)
+                print(worldseed) # print world seed
+                create_world(worldseed)
             elif event.ui_element == save_button:
                 print(worldseed)
+                save_world(worldseed)
+            elif event.ui_element == load_button:
+                f = open("save.txt", "r")
+                newseed = f.read()
+                print(newseed)
+                create_world(int(newseed))
+                f.close()
         manager.process_events(event)
 
     manager.update(time_delta)

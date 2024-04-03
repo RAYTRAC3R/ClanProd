@@ -57,30 +57,6 @@ def save_map(mapinfo, clanname):
     mapinfo = pd.DataFrame.from_dict(mapinfo, orient='index')
     mapinfo.to_csv(f'saves/{clanname}map.csv', index = False, header=False)
 
-def load_map(clanname):
-    dict_from_csv = {}
-    with open(f'{clanname}map.csv', 'r') as read_file:
-            clan_data = read_file.read()
-    sections = clan_data.split('\n')
-    for tileinfo in sections:
-        if tileinfo == "":
-            continue
-        tileinfo = tileinfo.split(',')
-        for trait in tileinfo:
-            if tileinfo[0] == "":
-                continue
-            else:
-                x = int(tileinfo[0])
-                y = int(tileinfo[1])
-                tile_biome = tileinfo[2]
-                tile_claim = tileinfo[3]
-                tile_twolegs = tileinfo[4]
-                tile_thunderpath = tileinfo[5]
-                tile_prey = tileinfo[6]
-                tile_plants = tileinfo[7]
-                dict_from_csv[(x,y)] = [x,y,tile_biome,tile_claim,tile_twolegs,tile_thunderpath,tile_prey,tile_plants]
-    return dict_from_csv
-
     
 #world = World((80,80),63)
 
