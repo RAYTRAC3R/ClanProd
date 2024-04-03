@@ -1,7 +1,6 @@
 import math
 from noise import snoise2
 import numpy as np
-import pandas as pd
 
 class World:
     def __init__(self, shape, seed):
@@ -57,10 +56,6 @@ class World:
 def save_map(mapinfo, clanname):
     mapinfo = pd.DataFrame.from_dict(mapinfo, orient='index')
     mapinfo.to_csv(f'saves/{clanname}map.csv', index = False, header=False)
-    
-def save_map(mapinfo, clanname):
-    mapinfo = pd.DataFrame.from_dict(mapinfo, orient='index')
-    mapinfo.to_csv(f'saves/{clanname}map.csv', index = False, header=False)
 
 def load_map(clanname):
     dict_from_csv = {}
@@ -85,6 +80,7 @@ def load_map(clanname):
                 tile_plants = tileinfo[7]
                 dict_from_csv[(x,y)] = [x,y,tile_biome,tile_claim,tile_twolegs,tile_thunderpath,tile_prey,tile_plants]
     return dict_from_csv
+
     
 #world = World((80,80),63)
 

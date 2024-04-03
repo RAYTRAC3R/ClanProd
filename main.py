@@ -10,7 +10,6 @@ def load_map(world, terrain):
         for x in range(WORLDSIZE):
             noisevalue = world.check_noisetile(x,y)
             if noisevalue > 0.01:
-                #buttons.draw_maptile_button((x*TILESIZE,y*TILESIZE),image=(pygame.transform.scale(terrain.images[1],(TILESIZE,TILESIZE))))
                 load_image(pygame.transform.scale(terrain.images[1],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
             elif noisevalue < -0.01:
                 load_image(pygame.transform.scale(terrain.images[2],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
@@ -21,14 +20,6 @@ def load_map(world, terrain):
             height = world.check_heighttile(x,y)
             if height < SEALEVEL:
                 load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-            #elif x == 0:
-            #    load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-            #elif x == 79:
-            #    load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-            #elif y == 0:
-            #    load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
-            #elif y == 44:
-            #    load_image(pygame.transform.scale(terrain.images[5],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
             elif height < BEACHLEVEL:
                 load_image(pygame.transform.scale(terrain.images[7],(TILESIZE,TILESIZE)),x*TILESIZE,y*TILESIZE)
             elif height > 0.5:
@@ -71,8 +62,11 @@ background.fill(pygame.Color('#000000'))
 
 manager = pygame_gui.UIManager((560, 720))
 
-hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 275), (250, 50)),
+regen_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 200), (250, 50)),
                                              text='Regenerate',
+                                             manager=manager)
+save_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((100, 300), (250, 50)),
+                                             text='Print Seed',
                                              manager=manager)
 
 clock = pygame.time.Clock()
@@ -80,7 +74,7 @@ is_running = True
 
 random.seed()
 worldseed = random.randrange(999999)
-print(worldseed) # print world seed
+#print(worldseed) # print world seed
 terrain = Tileset('tileset/terrain.tmx', 7, 1) # load tileset for terrain
 world = World((WORLDSIZE,WORLDSIZE),worldseed) # init world
 worldmap = pygame.Surface((720,720))
@@ -95,15 +89,16 @@ while is_running:
             pygame.quit()
 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == hello_button:
+            if event.ui_element == regen_button:
                 worldseed = random.randrange(999999)
-                print(worldseed) # print world seed
+                #print(worldseed) # print world seed
                 terrain = Tileset('tileset/terrain.tmx', 7, 1) # load tileset for terrain
                 world = World((WORLDSIZE,WORLDSIZE),worldseed) # init world
                 worldmap = pygame.Surface((720,720))
                 load_map(world, terrain)
                 draw_map(worldmap, 560, 0)
-
+            elif event.ui_element == save_button:
+                print(worldseed)
         manager.process_events(event)
 
     manager.update(time_delta)
